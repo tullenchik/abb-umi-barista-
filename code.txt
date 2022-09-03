@@ -1,0 +1,849 @@
+MODULE Baristessa
+    VAR num choice_coffee:=0;
+    VAR num choice_exit_or_continue_by_coffe:=0;
+    VAR num choice_exit_or_continue_by_cup:=0;
+    PERS num choice_coffe_by_bool:=3;
+    PERS num iterations_by_americano:=0;
+    PERS num iterations_by_capuccino:=1;
+    PERS num iterations_by_latte:=0;
+    PERS num first_client:=1;
+    CONST robtarget pLeverR:=[[537.47,-5.00,278.91],[0.683512,-0.240076,0.222922,-0.652289],[1,0,1,4],[-110.223,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pCapsulleR:=[[537.31,-7.00,215.94],[0.482986,-0.498313,0.518045,-0.500038],[1,1,0,4],[-162.827,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pEfficient_ejectionR:= [[323.27,-679.03,390.75],[0.652101,0.0466567,0.696435,-0.295915],[0,0,3,4],[-111.867,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pLever_from_upR:=[[606.37,2.54,317.48],[0.0013469,-0.61988,-0.748911,-0.234263],[1,1,-1,5],[174.821,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pLever_from_upR1:=[[507.35,-2.25,354.54],[0.145145,-0.754292,-0.636904,0.0658017],[1,1,0,5],[151.185,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pLever_from_upR2:=[[487.66,-3.62,323.01],[0.146552,-0.715186,-0.677699,0.0880649],[1,2,0,5],[145.452,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pLever_from_upR3:=[[467.35,-4.85,284.40],[0.117099,-0.695042,-0.703479,0.0912275],[1,1,0,5],[141.549,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPress_button1R:=[[437.15,-182.15,255.25],[0.634563,-0.551929,0.325721,-0.431984],[1,2,0,5],[-113.162,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPress_button2R:=[[587.75,-111.15,355.21],[0.118907,-0.872651,-0.150029,-0.449257],[0,2,0,4],[129.294,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPress_button3R:=[[583.22,-97.59,301.52],[0.0141358,0.999852,0.00450015,0.00876627],[0,1,0,5],[127.997,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPress_button4R:=[[584.27,-97.97,300.72],[0.000128544,-0.655831,0.754699,-0.0177699],[0,1,1,5],[127.835,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPress_button5R:=[[580.37,-125.45,286.84],[0.00382753,0.683626,-0.729121,0.0320097],[0,1,1,5],[124.23,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_red1R:=[[441.01,-183.53,453.05],[0.11356,-0.843031,-0.495625,-0.175383],[0,0,1,4],[122.659,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_red2R:= [[584.64,38.80,314.84],[0.0341635,0.733637,0.678541,0.0138111],[-1,0,1,4],[76.3522,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_red3R:=[[644.01,48.41,276.37],[0.00795177,-0.699568,-0.71452,-0.00165207],[-1,0,1,4],[62.2972,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_red4R:=[[644.97,15.85,278.73],[0.00606109,-0.711371,-0.702663,0.0133701],[-1,0,1,4],[57.34,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_red5R:=[[643.90,-23.67,280.10],[0.0249518,-0.72053,-0.692616,0.0223169],[-1,0,1,4],[62.3498,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_blue1R:=[[439.46,-147.87,338.16],[0.381624,-0.664061,-0.473291,-0.43518],[0,0,1,4],[177.601,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_blue2R:=[[598.25,-136.87,336.21],[0.014517,-0.680232,-0.728133,-0.0830442],[0,0,1,4],[111.827,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_blue3R:=[[649.03,-52.73,277.53],[0.0243226,-0.677908,-0.73149,-0.0690799],[0,0,1,0],[137.342,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_to_blue4R:=[[644.70,5.63,278.87],[0.00397827,-0.679359,-0.733707,0.0113937],[0,-1,1,0],[-152.192,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_small_lever_red_to_middleR:=[[644.81,-24.48,283.93],[0.00503219,0.723716,0.689868,0.0170971],[0,-1,1,0],[155.559,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pHomeR:=[[120.91,-150.98,150.41],[0.45262,-0.631828,0.533776,-0.333184],[0,0,1,4],[-101.662,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pDance2R:=[[241.27,-54.89,138.43],[0.596877,-0.575917,0.357933,-0.428883],[0,0,1,4],[-117.207,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pDance3R:=[[267.35,-232.92,100.59],[0.497732,-0.560878,0.42604,-0.506131],[0,0,1,4],[-105.356,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pDance4R:=[[233.86,-375.50,166.65],[0.418508,-0.507753,0.468797,-0.589293],[0,0,1,4],[-103.411,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPoitn_to_throwR:=[[421.78,-127.56,247.64],[0.462725,-0.497383,0.483416,-0.552091],[1,1,0,4],[-158.675,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule1R:=[[279.69,-73.46,163.11],[0.625233,-0.61132,0.286968,-0.39118],[0,0,1,4],[-114.285,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGet_in_capsulereceiver1R:=[[280.19,-31.70,158.01],[0.695907,-0.714409,-0.00493176,-0.0728635],[1,0,1,4],[167.912,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGet_in_capsulereceiver2R:=[[261.16,48.75,150.35],[0.726279,-0.686989,0.0121496,0.020417],[1,0,1,4],[162.161,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGet_in_capsulereceiver3R:=[[262.16,64.71,200.97],[0.738279,-0.672044,-0.0447114,-0.0360819],[1,0,1,4],[165.882,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_right_stand1R:=[[424.01,-179.81,227.32],[0.662704,-0.445795,0.393584,-0.455173],[1,0,1,4],[-116.252,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_right_stand2R:= [[471.94,-404.44,412.96],[0.481808,-0.0839847,0.425788,-0.761257],[1,0,1,4],[-66.0142,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_right_stand3R:=[[142.45,-449.28,290.38],[0.141192,-0.269112,-0.536687,0.787153],[2,0,1,4],[18.2241,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_right_stand4R:=[[-33.85,-374.82,77.51],[0.440569,-0.446965,-0.566033,0.534534],[1,0,1,4],[99.9928,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late1R:=[[-86.38,-398.93,50.85],[0.456649,-0.427918,-0.565784,0.536886],[1,0,1,4],[99.9676,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late2R:=[[-108.87,-398.31,35.50],[0.360542,-0.539979,-0.665637,0.367913],[1,0,1,4],[118.457,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late3R:=[[-139.62,-404.82,28.40],[0.393988,-0.544699,-0.593498,0.442534],[1,0,1,4],[113.222,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late4R:=[[-137.02,-408.12,39.31],[0.4236,-0.523065,-0.53734,0.508165],[1,0,1,4],[121.417,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late5R:=[[-93.90,-388.54,50.76],[0.445406,-0.524227,-0.491596,0.533978],[1,0,1,4],[117.018,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late6R:=[[37.77,-294.99,101.60],[0.440527,-0.523053,-0.504781,0.526827],[1,0,1,4],[107.686,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late1R:=[[-92.68,-408.05,98.32],[0.427044,-0.569857,-0.522271,0.46918],[1,0,1,4],[120.83,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late2R:=[[-118.57,-404.24,93.76],[0.403961,-0.605743,-0.545981,0.414483],[1,0,1,4],[126.748,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late3R:=[[-133.93,-400.59,89.92],[0.402252,-0.611316,-0.541934,0.413272],[1,0,1,4],[127.037,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late4R:=[[-138.03,-402.35,98.12],[0.423544,-0.591269,-0.550238,0.410182],[1,0,1,4],[126.776,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late5R:=[[-96.50,-406.27,107.52],[0.386963,-0.633734,-0.522574,0.418995],[1,0,1,4],[125.595,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late6R:=[[46.82,-339.38,123.67],[0.365827,-0.570677,-0.508238,0.531217],[1,0,1,4],[108.182,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late1R:=[[-62.96,-401.22,163.40],[0.429414,-0.583217,-0.491666,0.483452],[1,0,1,4],[118.81,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late2R:=[[-113.00,-399.98,153.17],[0.406992,-0.555528,-0.60235,0.403634],[1,0,1,4],[127.869,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late3R:=[[-137.75,-401.85,149.07],[0.405222,-0.570757,-0.573775,0.425221],[1,0,1,4],[128.139,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late4R:=[[-126.97,-396.66,159.36],[0.421056,-0.574058,-0.553454,0.43227],[1,0,1,4],[128.074,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late5R:=[[-88.54,-396.32,163.34],[0.398821,-0.598981,-0.54339,0.432309],[1,0,1,4],[126.418,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late6R:=[[3.97,-349.65,173.59],[0.466878,-0.577828,-0.459866,0.486481],[1,0,1,4],[112.168,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late1R:=[[-52.69,-390.80,230.68],[0.438358,-0.558441,-0.538138,0.454306],[1,0,1,4],[113.148,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late2R:=[[-119.79,-401.37,216.53],[0.399553,-0.591797,-0.549487,0.433818],[1,0,1,4],[130.319,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late3R:=[[-143.45,-396.86,206.89],[0.397939,-0.597988,-0.534174,0.445772],[1,0,1,4],[130.894,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late4R:=[[-133.46,-400.17,218.73],[0.415882,-0.599407,-0.510599,0.455018],[1,0,1,4],[130.247,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late5R:=[[-91.93,-399.05,231.89],[0.48437,-0.574276,-0.482847,0.449946],[1,0,1,4],[126.499,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late6R:=[[24.63,-317.84,177.41],[0.472827,-0.576209,-0.512948,0.425796],[1,0,1,4],[110.722,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule1R:=[[340.55,-62.08,201.32],[0.508825,-0.477801,0.481209,-0.530322],[1,1,0,4],[-178.939,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule2R:=[[458.24,-4.74,226.94],[0.460786,-0.531459,0.523496,-0.480811],[1,1,0,4],[-165.479,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule3R:=[[499.70,-7.45,221.27],[0.474716,-0.536143,0.488055,-0.498997],[1,1,0,4],[-161.906,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule4R:=[[524.05,-2.45,217.16],[0.459906,-0.530346,0.519106,-0.487595],[1,1,0,4],[-158.988,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule5R:=[[536.94,-3.67,215.28],[0.465983,-0.536879,0.507484,-0.48691],[1,1,0,4],[-157.758,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget pPull_out_capsulopriemnikR:=[[537.03,-3.56,215.86],[0.469525,-0.521537,0.503144,-0.504372],[1,1,0,4],[-162.544,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget pGo_give_capsule1R:=[[253.27,-138.28,200.58],[0.660852,-0.747848,0.0595321,0.0213185],[0,0,1,4],[176.279,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget pGo_give_capsule2R:=[[250.02,-48.36,226.84],[0.748573,-0.660356,0.0591647,0.00826192],[1,0,1,4],[-168.595,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget pGo_give_capsule3R:=[[247.83,-29.46,184.19],[0.720222,-0.692446,0.011512,-0.0408245],[1,0,1,4],[-170.151,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_coffe1R:=[[253.27,-138.28,200.58],[0.660852,-0.747848,0.0595321,0.0213185],[0,0,1,4],[176.279,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_coffe2R:=[[250.02,-48.36,226.84],[0.748573,-0.660356,0.0591647,0.00826192],[1,0,1,4],[-168.595,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_coffe3R:=[[247.83,-29.46,184.19],[0.720222,-0.692446,0.011512,-0.0408245],[1,0,1,4],[-170.151,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_coffe4R:=[[-149.28,-398.34,308.06],[0.439184,-0.550789,-0.561455,0.434185],[1,-1,1,4],[150.036,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_coffe5R:=[[-66.44,-394.89,330.14],[0.379115,-0.57917,-0.565328,0.448595],[1,-1,1,4],[142.582,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_coffe6R:=[[-5.81,-379.90,143.35],[0.368385,-0.566754,-0.59235,0.43841],[1,-1,1,4],[115.049,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_coffe1R:=[[-47.44,-373.70,381.61],[0.421388,-0.549733,-0.551695,0.464606],[1,-1,1,4],[137.613,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_coffe2R:=[[-118.03,-396.71,369.61],[0.435074,-0.544788,-0.544976,0.465745],[1,-1,1,4],[160.256,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_coffe3R:= [[-148.38,-398.11,360.98],[0.402011,-0.558093,-0.570535,0.448787],[1,-1,1,5],[167.054,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_coffe4R:=[[-118.61,-390.95,372.34],[0.417245,-0.567177,-0.54195,0.458811],[1,-1,1,4],[168.311,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_coffe5R:=[[-19.87,-374.50,399.80],[0.37925,-0.566716,-0.550895,0.481163],[1,-1,1,0],[96.0277,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_coffe6R:=[[17.44,-296.55,157.26],[0.487513,-0.489664,-0.552436,0.466235],[1,0,1,4],[110.052,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_milk1R:=[[-72.11,-378.33,436.56],[0.443035,-0.534886,-0.498656,0.518613],[2,-1,1,0],[-137.274,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_milk2R:=[[-115.74,-388.02,434.85],[0.374643,-0.557389,-0.587085,0.451987],[2,-1,1,0],[-100.53,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_milk3R:= [[-148.38,-398.11,360.98],[0.402011,-0.558093,-0.570535,0.448787],[1,-1,1,5],[167.054,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_milk4R:= [[-138.34,-393.31,428.63],[0.441422,-0.548399,-0.558018,0.439342],[2,-1,1,0],[-122.871,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_milk5R:=[[-76.49,-375.76,436.07],[0.457638,-0.555564,-0.517287,0.462958],[2,-1,1,0],[-139.111,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p1Capucino_milk6R:=[[34.95,-349.61,139.45],[0.406053,-0.547259,-0.520161,0.514841],[1,0,1,4],[103.425,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_milk1R:=[[-62.42,-381.50,507.68],[0.471507,-0.523414,-0.496874,0.50679],[1,-1,1,0],[-52.7085,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_milk2R:=[[-129.12,-393.78,488.32],[0.411056,-0.512254,-0.592486,0.466465],[1,-1,1,0],[-84.4853,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_milk3R:=[[-150.70,-396.79,482.40],[0.391799,-0.535052,-0.58628,0.465283],[2,-1,1,0],[-91.3096,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_milk4R:=[[-114.17,-388.61,502.29],[0.416061,-0.513488,-0.564376,0.494674],[1,-1,1,0],[-77.7019,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_milk5R:=[[-14.03,-354.10,500.86],[0.429957,-0.492526,-0.508334,0.560493],[1,-1,1,0],[-8.46021,9E+09,9E+09,9E+09,9E+09,9E+09]];
+   CONST robtarget p2Capucino_milk6R:=[[35.33,-373.92,186.79],[0.373579,-0.492139,-0.490675,0.614391],[1,-1,1,4],[109.133,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    PROC up_lever()
+        waittime 1;
+        g_Gripin;
+        MoveJ Offs(pLeverR,-55,0,-30),v300,z0,GripperR;
+        MoveJ Offs(pLeverR,-55,0,50),v1500,z0,GripperR;
+    ENDPROC
+    PROC insert_capsulle()
+        MoveJ pInsert_capsule1R, v100, z50, GripperR;
+        MoveJ pInsert_capsule2R, v100, z50, GripperR;
+        MoveJ pInsert_capsule3R, v100, z50, GripperR;
+        MoveJ pInsert_capsule4R, v100, z50, GripperR;
+        MoveJ pInsert_capsule5R, v100, z50, GripperR;
+        waittime 1;
+        g_GripOut;
+        MoveJ Offs(pInsert_capsule6R,-90,0,0), v200, fine, GripperR;
+    ENDPROC
+    PROC pull_out_the_trash()
+        MoveL Offs(pCapsulleR,-90,0,0),v300,z0,GripperR;
+        MoveJ pPoitn_to_throwR, v300, z0, GripperR;
+        MoveJ pEfficient_ejectionR,v1000,z0,GripperR;
+        insert_capsulle;
+    ENDPROC
+    PROC pull_out_the_capsulopriemnik()
+        g_Gripout;
+        MoveJ Offs(pPull_out_capsulopriemnikR,-90,0,0), v200, fine, GripperR;
+        MoveJ pPull_out_capsulopriemnikR, v100, fine, GripperR;
+        waittime 1;
+        g_GripIn;
+        MoveL Offs(pPull_out_capsulopriemnikR,-90,0,0), v500, fine, GripperR;
+    ENDPROC
+    PROC pull_the_lever()
+        MoveJ Offs(pCapsulleR,-115,0,0),v300,z0,GripperR;
+        waittime 1;
+        g_GripIn;
+        MoveJ Offs(pCapsulleR,-100,0,150),v200,z0,GripperR;
+        MoveJ Offs(pLever_from_upR,-100,0,95),v200,z0,GripperR;
+        MoveJ Offs(pLever_from_upR,0,0,95),v100,z0,GripperR;
+        MoveJ pLever_from_upR1, v200, z0, GripperR;
+        MoveJ pLever_from_upR2, v500, z0, GripperR;
+        MoveJ pLever_from_upR3, v500, z0, GripperR;
+        MoveJ pLever_from_upR2, v200, z0, GripperR;
+        MoveJ pLever_from_upR1, v200, z0, GripperR;
+        MoveJ Offs(pLever_from_upR,0,0,95),v100,z0,GripperR;
+        MoveJ Offs(pLever_from_upR,-100,0,95),v100,z0,GripperR;
+        MoveJ Offs(pCapsulleR,-100,0,150),v100,z0,GripperR;
+        MoveJ Offs(pCapsulleR,-100,0,0),v200,z0,GripperR;
+    ENDPROC
+    PROC press_the_button()
+        waittime 1;
+        g_Gripin;
+        MoveJ pPress_button1R, v200, fine, GripperR;
+        MoveJ pPress_button2R, v100, fine, GripperR;
+        MoveJ pPress_button3R, v100, fine, GripperR;
+        waittime 1;
+        g_GripOut;
+        MoveJ pPress_button4R, v100, fine, GripperR;
+        MoveJ pPress_button5R, v100, z0, GripperR;
+        MoveL Offs(pPress_button5R,-3,0,-10), v100, z0, GripperR;
+        MoveJ pPress_button3R, v300, fine, GripperR;
+        MoveJ pPress_button2R, v100, fine, GripperR;
+        MoveJ pPress_button1R, v200, fine, GripperR;
+    ENDPROC
+    PROC interface()
+        IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=1) THEN
+            TPErase;
+            TPWrite "Hello, I'm Yumi and I'm ready to get started.";
+        endif
+        TPReadFK choice_coffee, "What kind of coffee would you like?", "Americano", "Caramel latte", "Cappucino", stEmpty, stEmpty;
+    ENDPROC
+    PROC coffe_is_over()
+        TPReadFK choice_exit_or_continue_by_coffe, "Fill the cupsules into the capsule holders", "OK", "NO",stEmpty, stEmpty, stEmpty; 
+        IF(choice_exit_or_continue_by_coffe=2)THEN
+            TPWrite "Error!Sorry, the work will not continue without capsules!";
+	ENDIF
+    ENdPROC
+    PROC cup_is_over()
+        TPReadFK choice_exit_or_continue_by_cup, "Fill up the cup", "OK", "NO",stEmpty, stEmpty, stEmpty;
+        IF choice_exit_or_continue_by_cup=2 THEN
+                TPWrite "Error!Sorry, the work will not continue without cups!";
+        ENDIF
+    ENdPROC
+    PROC pull_lever_to_blue()
+        MoveJ pPull_small_lever_to_blue1R, v500, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue2R, v300, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue3R, v200, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue4R, v100, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue3R, v200, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue2R, v300, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue1R, v500, z50, GripperR;
+    ENDPROC
+    PROC pull_lever_to_red()
+        waittime 1;
+        g_GRipIn;
+        MoveJ pPull_small_lever_to_red1R, v500, z50, GripperR;
+        MoveJ pPull_small_lever_to_red2R, v300, z50, GripperR;
+        MoveJ pPull_small_lever_to_red3R, v200, z50, GripperR;
+        MoveJ pPull_small_lever_to_red4R, v100, z50, GripperR;
+        MoveJ pPull_small_lever_to_red5R, v50, z50, GripperR;
+        MoveJ pPull_small_lever_to_red4R, v100, z50, GripperR;
+        MoveJ pPull_small_lever_to_red3R, v200, z50, GripperR;
+        MoveJ pPull_small_lever_to_red2R, v300, z50, GripperR;
+        MoveJ pPull_small_lever_to_red1R, v500, z50, GripperR;
+    ENDPROC
+    PROC pull_lever_red_to_middle()
+        waittime 1;
+        g_GRipIn;
+         MoveJ pPull_small_lever_to_blue1R, v300, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue2R, v300, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue3R, v200, z50, GripperR;
+        MoveJ pPull_small_lever_red_to_middleR, v200, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue3R, v200, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue2R, v300, z50, GripperR;
+        MoveJ pPull_small_lever_to_blue1R, v300, z50, GripperR;
+    ENDPROC
+    PROC pull_the_lever_blue_to_middle()
+        MoveJ pPull_small_lever_to_red1R, v200, z50, GripperR;
+        MoveJ pPull_small_lever_to_red2R, v200, z50, GripperR;
+        MoveJ pPull_small_lever_to_red3R, v100, z50, GripperR;
+        MoveJ pPull_small_lever_to_red4R, v100, z50, GripperR;
+    ENDPROC
+    PROC dance(num p)
+        MoveJ pDance2R, v200, z0, GripperR;
+        FOR i FROM 1 to p DO
+       	    MoveJ pDance2R, v500, z0, GripperR;
+            MoveJ pDance3R, v500, z0, GripperR;
+            MoveJ pDance4R, v500, z0, GripperR;
+            MoveJ pDance3R, v500, z0, GripperR;
+       	    MoveJ pDance2R, v500, z0, GripperR;
+       ENDFOR
+     ENDPROC
+     PROC pick_up_capsulle_by_right1()
+        MoveJ pGet_in_capsulereceiver1R, v500, z0, GripperR;
+        MoveJ pGet_in_capsulereceiver2R, v500, z0, GripperR;
+        MoveJ pGet_in_capsulereceiver3R, v500, z0, GripperR;
+     ENDPROC
+     PROC pick_up_capsulle_by_right2()
+        MoveJ Offs(pGet_in_capsulereceiver3R,0,-90,0), v1000, z0, GripperR;
+     MoveJ pHomeR,v200,z0,GripperR;
+     ENDPROC
+     PROC go_right_stand()
+         g_Gripout;
+         MoveJ pGo_right_stand1R, v300, z0, GripperR;
+         MoveJ pGo_right_stand2R, v300, z0, GripperR;
+         MoveJ pGo_right_stand3R, v300, z0, GripperR;
+         MoveJ pGo_right_stand4R, v300, z0, GripperR;
+     ENDPROC
+     PROC go_from_right_stand()
+        MoveJ pGo_right_stand4R, v300, z0, GripperR;
+        MoveJ pGo_right_stand3R, v300, z0, GripperR;
+        MoveJ pGo_right_stand2R, v300, z0, GripperR;
+        MoveJ pGo_right_stand1R, v300, z0, GripperR;
+     ENDPROC
+     PROC latte_coffe(robtarget point1,robtarget point2, robtarget point3,robtarget point4,robtarget point5,robtarget point6)
+         go_right_stand;
+         MoveJ point1, v200, z0, GripperR;
+         MoveJ point2, v100, z0, GripperR;
+         MoveJ point3, v20, z0, GripperR;
+         waittime 1;
+        g_GripIn;
+         MoveJ point4, v10, z0, GripperR;
+         MoveJ point5, v100, z0, GripperR;
+         MoveJ point6, v200, z0, GripperR;
+         go_from_right_stand;
+     ENDPROC
+     PROC go_to_give_capsuleR()
+         MoveJ pGo_give_capsule1R, v100, z0, GripperR;
+         MoveJ  pGo_give_capsule2R, v100, z0, GripperR;
+         MoveJ  pGo_give_capsule3R, v100, z0, GripperR;
+         waittime 1;
+         g_GripOut;
+     ENDPROC
+             PROC capucino(robtarget point1,robtarget point2,robtarget point3,robtarget point4,robtarget point5,robtarget point6)
+         go_right_stand;
+         MoveJ point1, v100, z0, GripperR;
+         MoveJ point2, v100, z0, GripperR;
+         MoveJ point3, v100, z0, GripperR;
+        waittime 1;
+        g_GripIn;
+        MoveJ point4, v100, z0, GripperR;
+        MoveJ point5, v100, z0, GripperR;
+        MoveJ point6, v100, z0, GripperR;
+        go_from_right_stand;
+     ENDPROC
+     PROC main()
+        SETDO custom_do_7,0;
+         MoveJ pHomeR,v200,z0,GripperR;
+        IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte>2) then
+        	cup_is_over;
+        ENDIF
+        IF(iterations_by_americano>3) THEN
+            iterations_by_americano:=0;
+            coffe_is_over;
+        ENDIF
+        IF(iterations_by_capuccino>1) THEN
+            iterations_by_capuccino:=0;
+            coffe_is_over;
+        ENDIF
+        IF(iterations_by_latte>3) THEN
+            iterations_by_latte:=0;
+            coffe_is_over;
+        ENDIF
+        interface;
+        IF(first_client=0) THEN
+            first_client:=first_client+1;
+            press_the_button;
+        endif
+        IF (choice_coffee = 1) THEN
+            choice_coffe_by_bool:=1;
+            iterations_by_americano:=iterations_by_americano+1;
+            up_lever;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR;!1.1
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            pick_up_capsulle_by_right1;!1.2
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            pick_up_capsulle_by_right2;!1.3
+            MoveJ pHomeR,v200,z0,GripperR;
+            insert_capsulle;
+            pull_the_lever;
+            pull_lever_to_red;
+            MoveJ pHomeR,v200,z0,GripperR;
+            WaitTime 19;
+            pull_lever_red_to_middle;
+            up_lever;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR;           
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            pull_out_the_trash;
+            pull_the_lever;
+            MoveJ pHomeR,v200,z0,GripperR;
+        ENDIF
+        IF choice_coffee = 2 THEN!2.1
+            choice_coffe_by_bool:=2;
+            iterations_by_latte:=iterations_by_latte+1;
+            up_lever;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR;!2.1
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            pick_up_capsulle_by_right1;!2.2
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            pick_up_capsulle_by_right2;!2.3
+            MoveJ pHomeR,v200,z0,GripperR;
+            insert_capsulle;
+            pull_the_lever;
+            pull_lever_to_red;
+            MoveJ pHomeR,v200,z0,GripperR;
+            waittime 6;
+            pull_lever_red_to_middle;
+            up_lever;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR;           
+            pull_out_the_trash;
+            MoveJ pHomeR,v200,z0,GripperR;  
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            IF(iterations_by_latte=1) then
+                latte_coffe p1Late1R,p1Late2R,p1Late3R,p1Late4R,p1Late5R,p1Late6R;
+            ELSEIF(iterations_by_latte=2) THEN
+                latte_coffe p2Late1R,p2Late2R,p2Late3R,p2Late4R,p2Late5R,p2Late6R;
+            ELSEIF(iterations_by_latte=3) THEN
+               latte_coffe p3Late1R,p3Late2R,p3Late3R,p3Late4R,p3Late5R,p3Late6R;
+            ELSEIF(iterations_by_latte=4) then
+                latte_coffe p4Late1R,p4Late2R,p4Late3R,p4Late4R,p4Late5R,p4Late6R;
+            ENDIF
+            MoveJ pHomeR,v200,z0,GripperR; 
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;!2.4
+            go_to_give_capsuleR;
+            waittime 1;
+            g_Gripout;
+            MoveJ pHomeR ,v100,fine,GripperR;
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            pull_the_lever;!2.5
+            pull_lever_to_red;
+            MoveJ pHomeR,v200,z0,GripperR;
+            waittime 6;
+            pull_lever_red_to_middle;
+            up_lever;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR;           
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            pull_out_the_trash;!2.6
+            pull_the_lever;
+            MoveJ pHomeR,v200,z0,GripperR;
+        ENDIF
+        IF choice_coffee = 3 THEN
+            choice_coffe_by_bool:=3;
+            iterations_by_capuccino:=iterations_by_capuccino+1;
+            up_lever;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR; 
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            insert_capsulle;!3.2
+            MoveJ pHomeR,v200,z0,GripperR; 
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;!3.3
+            IF(iterations_by_capuccino=1) then
+                capucino p1Capucino_milk1R,p1Capucino_milk2R,p1Capucino_milk3R,p1Capucino_milk4R,p1Capucino_milk5R,p1Capucino_milk6R;
+            ELSEIF(iterations_by_capuccino=2) THEN
+                capucino p2Capucino_milk1R,p2Capucino_milk2R,p2Capucino_milk3R,p2Capucino_milk4R,p2Capucino_milk5R,p2Capucino_milk6R;
+            ENDIF
+            MoveJ pHomeR,v200,z0,GripperR; 
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;
+            go_to_give_capsuleR;
+            waittime 1;
+            g_Gripout;
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;!3.5
+            pull_the_lever;
+            pull_lever_to_red;
+            MoveJ pHomeR,v200,z0,GripperR;
+            waittime 7;
+            pull_lever_red_to_middle;
+            up_lever;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR;           
+            pull_out_the_trash;
+            MoveJ pHomeR,v200,z0,GripperR;   
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;!3.6
+            IF(iterations_by_capuccino=1) then
+                capucino p1Capucino_coffe1R,p1Capucino_coffe2R,p1Capucino_coffe3R,p1Capucino_coffe4R,p1Capucino_coffe5R,p1Capucino_coffe6R;
+            ELSEIF(iterations_by_capuccino=2) THEN
+                capucino p1Capucino_coffe1R,p1Capucino_coffe2R,p1Capucino_coffe3R,p1Capucino_coffe4R,p1Capucino_coffe5R,p1Capucino_coffe6R;
+            ENDIF
+            MoveJ pHomeR,v200,z0,GripperR;
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;!3.7
+            go_to_give_capsuleR;
+            waittime 1;
+            g_Gripout;  
+            MoveJ pHomeR,v200,z0,GripperR;
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;!3.8
+            pull_the_lever;
+            pull_lever_to_red;
+            MoveJ pHomeR,v200,z0,GripperR;
+            waittime 7;
+            pull_lever_red_to_middle;
+            up_lever;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR;           
+            pull_out_the_trash;
+            pull_out_the_capsulopriemnik;
+            MoveJ pHomeR,v200,z0,GripperR;
+            SetDO custom_DO_7, 1;
+            WaitDO custom_DO_7,0;!3.9
+
+
+            insert_capsulle;
+            pull_the_lever;
+        ENDIF
+           ENDPROC
+        ENDMODULE
+
+
+
+MODULE Baristessa
+    PERS num choice_coffe_by_bool;
+    PERS num iterations_by_americano;
+    PERS num iterations_by_capuccino;
+    PERS num iterations_by_latte;
+    PERS num first_client;
+    CONST robtarget CapsuleL1:=[[289.34,51.76,126.49],[0.273308,-0.490808,0.667436,-0.488814],[0,3,3,4],[113.683,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget CapsuleL2:=[[430.02,5.08,206.48],[0.507455,-0.519788,0.479125,-0.492696],[-1,3,2,4],[115.383,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget CapsuleL3:= [[530.86,-0.15,220.67],[0.52484,-0.486184,0.518334,-0.468506],[-1,3,2,4],[105.071,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pHomeL:=[[69.60,187.92,202.03],[0.357643,-0.554441,0.617646,-0.428019],[0,2,-1,5],[91.52,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pDance1L:=[[248.38,319.45,150.90],[0.470541,-0.536026,0.544016,-0.441942],[0,2,-1,5],[108.273,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pDance2L:=[[266.54,267.38,95.48],[0.480387,-0.49919,0.560435,-0.453817],[-1,2,-1,5],[109.517,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pDance3L:=[[247.52,67.94,142.96],[0.434539,-0.474325,0.54073,-0.542036],[-1,2,-1,5],[117.696,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup1L:=[[226.49,274.09,201.43],[0.466643,-0.387928,0.606166,-0.51412],[0,2,-1,5],[102.318,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup2L:=[[130.26,281.49,113.64],[0.0929841,0.199837,-0.974723,0.036528],[0,2,-1,4],[-170.797,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup3L:=[[239.92,215.01,232.97],[0.0387909,0.235963,-0.970961,-0.00713137],[0,2,-1,4],[-108.757,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup4L:=[[308.56,33.88,230.47],[0.0203012,-0.0792839,0.99582,0.0405501],[1,2,-2,4],[-79.9254,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup5L:=[[470.66,11.16,170.72],[0.225162,-0.0673995,0.971207,0.038947],[1,2,-2,4],[-71.3246,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup6L:=[[534.77,1.46,147.12],[0.280954,-0.0445462,0.958158,0.0318303],[1,2,-2,4],[-69.798,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup7L:=[[518.79,-3.04,114.92],[0.13588,-0.0363111,0.989679,0.0274469],[2,2,-2,4],[-69.4939,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup8L:=[[513.97,1.20,136.42],[0.174987,-0.0201058,0.983535,0.0404358],[1,2,-2,4],[-69.7376,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup9L:=[[453.26,10.71,158.59],[0.0895968,-0.020225,0.99456,0.0491239],[1,2,-2,4],[-70.807,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup10L:=[[322.30,30.45,230.45],[0.0284255,-0.0168293,0.999053,0.0283282],[1,2,-2,4],[-79.9702,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup11L:=[[278.42,155.58,241.51],[0.0111101,-0.217114,0.976077,0.0033234],[1,2,-2,4],[-96.807,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup12L:=[[231.64,286.97,229.89],[0.0390529,-0.359795,0.93102,0.0471524],[0,2,-2,4],[-114.201,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup13L:=[[185.07,427.90,205.59],[0.000918972,-0.456911,0.888929,0.0321964],[0,2,-2,5],[-147.232,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup14L:=[[203.23,441.22,99.08],[0.0149681,-0.424043,0.904829,0.0353426],[0,2,-2,5],[-156.52,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup15L:=[[232.42,449.40,73.25],[0.0195628,-0.413076,0.910063,0.0277679],[0,2,-2,5],[-153.121,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup16L:=[[239.62,450.50,109.10],[0.0241409,-0.407103,0.912995,0.0112036],[0,2,-2,5],[-152.156,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup17L:=[[199.35,452.70,182.97],[0.0652974,-0.488007,0.867638,-0.069211],[0,2,-2,5],[-178.883,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPut_give_cup18L:=[[165.18,391.71,141.62],[0.333827,-0.739353,0.518903,-0.269548],[0,2,-2,5],[87.1806,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_give_capsule1L:=[[232.17,195.49,233.01],[0.409268,-0.427095,0.507682,-0.626377],[0,2,-1,5],[109.663,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_give_capsule2L:=[[269.87,99.50,211.27],[0.080492,0.0058963,0.728928,-0.679817],[-1,2,-1,5],[-177.315,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup1L:=[[247.60,340.29,182.27],[0.469191,-0.549903,0.501582,-0.47527],[0,2,-1,5],[102.548,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup2L:=[[411.18,515.75,231.70],[0.582144,-0.547354,0.442986,-0.40654],[-1,2,-1,5],[114.731,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup3L:=[[443.44,505.00,148.70],[0.00331558,-0.836042,0.546003,-0.0538923],[-1,1,-1,4],[149.263,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine1L:=[[164.41,328.55,229.01],[0.028944,-0.327274,-0.944447,-0.00854964],[0,1,0,5],[-108.664,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine2L:=[[297.67,91.76,235.56],[0.00617172,0.321292,0.946768,-0.0190648],[1,0,1,5],[-96.1342,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine3L:=[[450.83,7.69,136.50],[0.0447366,0.03397,0.998419,-0.00213967],[1,0,0,5],[-79.9559,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine4L:=[[531.72,6.89,114.12],[0.135497,0.000320638,0.990693,-0.0129795],[2,0,0,5],[-79.7833,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine5L:=[[549.16,11.36,127.59],[0.229566,-0.000199582,0.973227,-0.0113073],[2,0,0,5],[-79.6126,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine6L:=[[539.40,11.36,144.35],[0.322969,0.0101874,0.946267,-0.012882],[2,0,0,5],[-79.9335,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine7L:=[[447.67,6.63,199.72],[0.22836,0.0401849,0.972555,-0.019351],[1,0,0,5],[-82.3495,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine8L:=[[162.57,167.07,188.24],[0.197715,0.398386,-0.891856,-0.0824038],[1,0,0,5],[-105.331,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine9L:=[[179.40,139.21,178.26],[0.178005,0.374258,-0.910064,-0.00540742],[0,0,0,5],[-112.455,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine10L:=[[263.91,227.30,184.92],[0.0050443,-0.214053,0.97533,-0.0537397],[0,0,0,5],[-117.373,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pGo_cup_to_machine11L:=[[135.48,394.55,199.44],[0.339832,-0.605479,0.718353,-0.0433384],[0,1,0,5],[106.897,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Cup1L:=[[356.11,457.00,175.73],[0.034541,0.303609,-0.951891,0.0230842],[0,1,0,4],[178.055,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Cup2L:=[[375.08,457.72,64.20],[0.0228654,-0.297637,0.95418,0.02072],[-1,1,0,4],[170.777,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Cup3L:=[[323.92,460.90,193.62],[0.0339279,-0.224877,0.973691,-0.0143046],[0,1,0,4],[-168.294,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Cup4L:=[[110.65,348.93,199.15],[0.0231126,0.0965056,-0.993393,0.057648],[0,1,0,4],[148.054,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Cup1L:=[[445.03,485.48,112.91],[0.0188272,0.233803,0.971962,0.0164606],[-1,1,0,4],[161.768,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Cup2L:=[[450.33,480.23,75.02],[0.023468,0.229226,0.973027,0.0111004],[-1,1,0,4],[157.786,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Cup3L:=[[460.80,492.67,202.67],[0.0445275,0.262673,0.963533,-0.0249793],[-1,1,1,4],[161.106,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Cup4L:=[[175.76,355.53,186.73],[0.0440978,0.325106,0.944192,-0.0293935],[0,1,1,4],[168.795,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Cup1L:= [[422.51,524.22,112.14],[0.0399415,-0.322651,0.94503,0.0349108],[-1,1,0,4],[164.082,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Cup2L:=[[426.33,517.97,71.68],[0.0225847,-0.331471,0.942988,0.0197471],[-1,1,0,4],[157.58,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Cup3L:=[[397.37,516.31,199.72],[0.027901,-0.225135,0.972056,-0.0603565],[0,1,0,4],[178.118,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Cup4L:=[[162.83,318.44,186.38],[0.0794597,0.171045,-0.974079,0.124901],[0,1,0,4],[167.287,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pStand1L:=[[279.40,358.75,143.75],[0.524769,-0.504095,0.46216,-0.506867],[-1,2,-1,5],[107.719,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pStand2L:=[[316.58,605.86,304.24],[0.867783,-0.477853,0.0845853,-0.107031],[-1,1,0,5],[69.1282,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pStand3L:=[[69.65,594.65,201.31],[0.732965,-0.636945,-0.238004,0.0204395],[-1,1,0,4],[-28.588,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pStand4L:=[[7.91,450.31,60.05],[0.510521,-0.651352,-0.434886,0.354941],[-1,2,-1,5],[-74.5322,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Americano1L:=[[-59.49,470.45,25.19],[0.472661,-0.682357,-0.448325,0.33164],[-1,2,-1,5],[-88.134,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Americano2L:=[[-95.35,483.05,24.52],[0.484456,-0.667246,-0.42572,0.372621],[-1,2,-1,5],[-87.2882,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Americano3L:=[[-90.77,482.08,37.07],[0.498597,-0.643028,-0.42114,0.400695],[-1,2,-1,5],[-85.5114,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Americano4L:=[[-33.02,462.40,46.63],[0.477089,-0.581942,-0.494101,0.435423],[-1,2,-1,5],[-88.7369,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Americano1L:=[[-30.48,464.93,111.33],[0.461571,-0.657951,-0.46117,0.375999],[-1,2,-1,5],[-103.516,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Americano2L:=[[-88.68,481.56,82.43],[0.448124,-0.684051,-0.46808,0.334902],[-1,2,-1,5],[-107.945,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Americano3L:=[[-87.10,481.55,91.64],[0.464253,-0.663942,-0.463665,0.358698],[-1,2,-1,5],[-107.111,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Americano4L:=[[-1.41,450.89,104.57],[0.440924,-0.628032,-0.505012,0.395127],[-1,2,-1,5],[-107.72,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Americano1L:=[[1.95,461.81,174.22],[0.433538,-0.663309,-0.481484,0.374486],[-1,2,-1,5],[-105.726,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Americano2L:=[[-93.39,486.59,145.83],[0.474921,-0.653397,-0.493685,0.322176],[-1,2,-1,5],[-109.434,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Americano3L:=[[-91.74,484.18,156.23],[0.490248,-0.626601,-0.490512,0.355563],[-1,2,-1,5],[-108.117,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Americano4L:=[[32.21,449.08,194.43],[0.482986,-0.514107,-0.55199,0.444664],[-1,2,-1,5],[-98.5486,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Americano1L:=[[28.58,459.81,251.30],[0.43696,-0.619864,-0.49744,0.421174],[-1,2,0,5],[-95.3165,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Americano2L:=[[-99.01,482.88,204.12],[0.46583,-0.658191,-0.475814,0.351267],[-1,2,0,5],[-116.285,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Americano3L:=[[-91.31,486.67,215.47],[0.486781,-0.617394,-0.483482,0.384857],[-1,2,-1,5],[-112.896,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Americano4L:=[[-35.30,451.24,220.71],[0.436918,-0.606818,-0.513927,0.42042],[-1,2,0,5],[-109.462,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late_milk1L:=[[-26.20,464.52,308.65],[0.518833,-0.647913,-0.437924,0.345316],[-1,3,-1,5],[-97.0957,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late_milk2L:=[[-74.10,479.30,300.08],[0.502621,-0.644967,-0.451019,0.357732],[-1,2,0,4],[-118.946,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late_milk3L:=[[-100.45,483.15,291.56],[0.469031,-0.649145,-0.483414,0.353457],[-1,2,0,4],[-135.908,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late_milk4L:=[[-80.34,476.68,306.28],[0.492416,-0.670551,-0.446126,0.329938],[-1,2,0,4],[-138.502,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late_milk5L:=[[-53.01,463.40,311.58],[0.545764,-0.606288,-0.475817,0.328869],[-1,3,-1,4],[-102.314,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p1Late_milk6L:=[[44.69,428.98,325.55],[0.529514,-0.560384,-0.505892,0.386855],[-2,2,0,5],[-67.6406,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late_milk1L:=[[28.45,432.10,399.56],[0.532559,-0.57776,-0.481054,0.388796],[-1,1,1,0],[-72.7019,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late_milk2L:=[[-78.11,474.36,361.48],[0.44573,-0.692495,-0.47904,0.303802],[-1,1,1,5],[-173.889,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late_milk3L:=[[-105.22,481.03,354.41],[0.458306,-0.661313,-0.491272,0.333575],[-1,1,1,5],[-165.457,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late_milk4L:=[[-84.15,475.49,370.45],[0.484058,-0.639009,-0.471499,0.367485],[-1,1,1,4],[-161.795,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late_milk5L:=[[42.63,445.51,402.04],[0.49739,-0.627368,-0.444892,0.401352],[-1,1,2,0],[-59.2138,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p2Late_milk6L:=[[62.40,411.13,280.62],[0.508636,-0.555414,-0.524296,0.397389],[-1,0,1,4],[-97.8208,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late_milk1L:=[[14.05,411.54,454.46],[0.488874,-0.649409,-0.48292,0.325666],[-2,1,1,5],[58.21,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late_milk2L:=[[-76.18,475.18,422.74],[0.422662,-0.716055,-0.471302,0.294102],[-1,1,1,5],[145.338,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late_milk3L:=[[-109.41,488.05,410.99],[0.468348,-0.65142,-0.504834,0.318504],[-1,1,1,5],[173.669,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late_milk4L:=[[-113.32,487.90,417.69],[0.481328,-0.640102,-0.498842,0.331285],[-1,1,1,5],[173.984,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late_milk5L:=[[-60.89,470.30,435.40],[0.513164,-0.63827,-0.488787,0.300602],[-1,1,1,5],[133.678,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p3Late_milk6L:=[[54.15,423.16,419.17],[0.521965,-0.57819,-0.51519,0.357531],[-1,0,1,0],[-46.7366,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late_milk1L:=[[19.08,417.78,499.51],[0.472999,-0.63715,-0.500521,0.346108],[-1,3,0,1],[-0.670707,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late_milk2L:=[[-78.12,469.89,486.13],[0.469116,-0.694126,-0.461268,0.29215],[-2,3,0,1],[75.4578,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late_milk3L:=[[-113.26,487.67,474.56],[0.481057,-0.662313,-0.470509,0.329465],[-2,3,0,1],[97.5814,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late_milk4L:=[[-112.95,489.39,487.18],[0.498332,-0.637446,-0.481041,0.337532],[-2,3,0,1],[94.6586,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late_milk5L:=[[-41.21,478.51,497.93],[0.517617,-0.594406,-0.46687,0.400983],[-2,3,0,1],[63.331,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget p4Late_milk6L:=[[126.36,465.75,423.13],[0.516159,-0.546939,-0.493813,0.436562],[-2,3,-1,1],[-63.89,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPick_up_capsule1L:=[[311.39,213.02,162.37],[0.426998,-0.380249,0.591177,-0.568852],[-1,2,-1,5],[113.818,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPick_up_capsule2L:=[[251.94,17.14,186.21],[0.0231819,-0.0239658,-0.729152,0.683539],[-1,2,-1,5],[-166.958,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget Additionalplatte4L:=[[30.58,437.10,161.59],[0.512706,-0.576738,-0.506646,0.384469],[-1,3,-1,5],[-107.473,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pPull_out_the_capsuleL:=[[537.79,1.87,219.42],[0.469341,-0.490244,0.502683,-0.535435],[-1,1,0,5],[164.019,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule1L:=[[365.56,100.81,161.25],[0.470459,-0.498015,0.494759,-0.534662],[-1,1,0,5],[161.532,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule2L:= [[450.99,-1.43,231.29],[0.515446,-0.470693,0.501851,-0.510793],[-1,1,0,5],[155.464,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule3L:=[[479.35,1.75,229.38],[0.505277,-0.494275,0.474493,-0.524637],[-1,1,0,5],[151.349,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule4L:=[[525.92,2.47,223.77],[0.473078,-0.463871,0.495648,-0.561564],[-1,1,0,5],[144.849,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pInsert_capsule5L:=[[537.07,0.65,220.79],[0.467455,-0.443176,0.512355,-0.567956],[-1,1,0,5],[143.415,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pgo_to_give_capsule1L:=[[260.95,336.14,193.86],[0.494381,-0.447413,0.60332,-0.437509],[0,2,-1,5],[101.195,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pgo_to_give_capsule2L:= [[260.13,108.37,252.79],[0.0567701,-0.0316308,0.725959,-0.68466],[0,2,-1,5],[-171.545,9E+09,9E+09,9E+09,9E+09,9E+09]];
+    CONST robtarget pgo_to_give_capsule3L:=[[262.66,98.74,212.20],[0.0513643,-0.0344002,0.757215,-0.650233],[-1,2,-1,5],[-171.44,9E+09,9E+09,9E+09,9E+09,9E+09]];
+PROC pull_out_the_capsulopriemnik_L()
+    waittime 1;
+    g_gripout;
+    MoveJ offs(pPull_out_the_capsuleL,-80,0,0), v100, z0, GripperL;
+    MoveJ pPull_out_the_capsuleL, v100, z0, GripperL;
+    waittime 1;
+    g_gripin;
+    MoveL offs(pPull_out_the_capsuleL,-80,0,0), v300, z0, GripperL;
+    MoveJ pHomeL ,v200,fine,GripperL;
+ ENDPROC
+ PROC insert_capsule_L()
+    MoveJ pInsert_capsule1L, v100, z0, GripperL;
+    MoveJ pInsert_capsule2L, v100, z0, GripperL;
+    MoveJ pInsert_capsule3L, v100, z0, GripperL;
+    MoveJ pInsert_capsule4L, v100, z0, GripperL;
+    MoveJ pInsert_capsule5L, v100, z0, GripperL;
+    waittime 1;
+    g_gripout;
+    MoveJ pHomeL ,v200,fine,GripperL;
+ ENDPROC
+ PROC go_to_give_capsule()
+     waittime 1;
+     MoveJ pgo_to_give_capsule1L, v100, z0, GripperL;
+     MoveJ pgo_to_give_capsule2L, v50, z0, GripperL;
+     MoveJ Offs(pgo_to_give_capsule3L,0,10,8), v10, z0, GripperL;
+     waittime 1;
+     g_Gripout;
+     MoveJ pHomeL ,v200,fine,GripperL;
+ ENDPROC
+ PROC go_to_the_cup()
+     waittime 1;
+     g_Gripout;
+     MoveJ pGo_cup1L, v40, z0, GripperL;
+     MoveJ pGo_cup2L, v40, z0, GripperL;
+     MoveJ pGo_cup3L, v40, z0, GripperL;
+ ENDPROC
+PROC put_and_give_cup()
+        waittime 1;
+        g_GripOut;
+        MoveJ pPut_give_cup1L, v300, fine, GripperL;
+        MoveJ pPut_give_cup2L, v200, fine, GripperL;
+        MoveJ pPut_give_cup3L, v200, fine, GripperL;
+        MoveJ pPut_give_cup4L, v150, fine, GripperL;
+        MoveJ pPut_give_cup5L, v100, fine, GripperL;
+        MoveJ pPut_give_cup6L, v50, fine, GripperL;
+        MoveJ pPut_give_cup7L, v10, fine, GripperL;
+        waittime 1;
+        g_GripIn;
+        MoveJ pPut_give_cup8L, v10, fine, GripperL;
+        MoveJ pPut_give_cup9L, v50, fine, GripperL;
+        MoveJ pPut_give_cup10L, v100, fine, GripperL;
+        MoveJ pPut_give_cup11L, v150, fine, GripperL;
+        MoveJ pPut_give_cup12L, v200, fine, GripperL;
+        MoveJ pPut_give_cup13L, v200, fine, GripperL;
+        MoveJ pPut_give_cup14L, v100, fine, GripperL;
+        MoveJ pPut_give_cup15L, v50, fine, GripperL;
+        waittime 1;
+        g_GripOut;
+        MoveJ pPut_give_cup16L, v50, fine, GripperL;
+        MoveJ pPut_give_cup17L, v100, fine, GripperL;
+        MoveJ pPut_give_cup18L, v100, fine, GripperL;
+        MoveJ pHomeL ,v200,fine,GripperL;
+    ENDPROC
+    PROC go_with_cup_in_coffemachine()
+       MoveJ pGo_cup_to_machine1L, v200, z0, GripperL;
+        MoveJ pGo_cup_to_machine2L, v100, z0, GripperL;
+        MoveJ pGo_cup_to_machine3L, v50, z0, GripperL;
+        MoveJ Offs(pGo_cup_to_machine4L,0,0,5), v10, z0, GripperL;
+        waittime 1;        
+        g_GripOut;
+        MoveJ pGo_cup_to_machine5L, v10, z0, GripperL;
+        MoveJ pGo_cup_to_machine6L, v50, z0, GripperL;
+        MoveJ pGo_cup_to_machine7L, v100, z0, GripperL;
+        MoveJ pGo_cup_to_machine8L, v200, z0, GripperL;
+        MoveJ pGo_cup_to_machine9L, v300, z0, GripperL;
+        MoveJ pGo_cup_to_machine10L, v300, z0, GripperL;
+        MoveJ pGo_cup_to_machine11L, v300, z0, GripperL;
+    ENDPROC
+    PROC insert_cup(robtarget point1,robtarget point2,robtarget point3,robtarget point4)
+        go_to_the_cup;
+        MoveJ point1, v200, z0, GripperL;
+        MoveJ point2, v200, z0, GripperL;
+        waittime 1;
+        g_GripIn;
+        MoveJ point3, v200, z0, GripperL;
+        MoveJ point4, v200, z0, GripperL;
+        go_with_cup_in_coffemachine;
+    ENDPROC
+    PROC dance(num p)
+        MoveJ pDance1L, v200, z0, GripperL;
+        FOR i FROM 1 to p DO
+            MoveJ pDance1L, v500, z0, GripperL;
+            MoveJ pDance2L, v500, z0, GripperL;
+            MoveJ pDance3L, v500, z0, GripperL;
+            MoveJ pDance2L, v500, z0, GripperL;
+            MoveJ pDance1L, v500, z0, GripperL;
+        endfor
+    ENDPROC
+    PROC go_to_left_stand()
+        waittime 1;
+        g_GripOut;
+        MoveJ pStand1L, v300, z0, GripperL;
+        MoveJ pStand2L, v200, z0, GripperL;
+        MoveJ pStand3L, v200, z0, GripperL;
+        MoveJ pStand4L, v100, z0, GripperL;
+    ENDPROC
+    PROC go_from_left_stand()
+        MoveJ pStand4L, v100, z0, GripperL;
+        MoveJ pStand3L, v200, z0, GripperL;
+        MoveJ pStand2L, v200, z0, GripperL;
+        MoveJ pStand1L, v300, z0, GripperL;
+        MoveJ pHomeL ,v200,fine,GripperL;
+    ENDPROC
+    PROC Americano(robtarget point1,robtarget point2,robtarget point3,robtarget point4)
+        go_to_left_stand;
+        MoveJ point1, v100, z0, GripperL;
+        MoveJ point2, v50, z0, GripperL;
+        waittime 1;
+        g_GripIn;
+        MoveJ point3, v10, z0, GripperL;
+        MoveJ point4, v100, z0, GripperL;
+        go_from_left_stand;
+    ENDPROC
+        PROC latte_milk(robtarget point1,robtarget point2,robtarget point3,robtarget point4,robtarget point5,robtarget point6)
+        go_to_left_stand;
+        MoveJ point1, v200, z0, GripperL;
+        MoveJ point2, v100, z0, GripperL;
+        MoveJ point3, v50, z0, GripperL;
+        waittime 1;
+        g_GripIn;
+        MoveJ  point4, v50, z0, GripperL;
+        MoveJ  point5, v100, z0, GripperL;
+        MoveJ  point6, v200, z0, GripperL;
+        IF(point1=p4Late_milk1L) then
+        MoveJ Additionalplatte4L, v200, z0, GripperL;
+        ENDIF
+        go_from_left_stand;
+        ENDPROC
+        PROC pick_up_capsulle_by_left1()
+            MoveJ pPick_up_capsule1L, v300, z0, GripperL;
+            MoveJ pPick_up_capsule2L, v300, z0, GripperL;
+        ENDPROC
+        PROC pick_up_capsulle_by_left2()
+            MoveJ Offs(pPick_up_capsule2L,0,90,0), v200, z0, GripperL;
+        ENDPROC
+    PROC main()
+    MoveJ pHomeL ,v100,fine,GripperL;
+    WaitDO custom_DO_7,1;
+         IF(choice_coffe_by_bool=1) THEN
+             IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=1) then
+                insert_cup p1Cup1L,p1Cup2L,p1Cup3L,p1Cup4L;
+             ENDIF
+ 	        IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=2) then
+                 insert_cup p2Cup1L,p2Cup2L,p2Cup3L,p2Cup4L;
+             ENDIF
+ 	        IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=3) then
+                 insert_cup p3Cup1L,p3Cup2L,p3Cup3L,p3Cup4L;
+             ENDIF
+             MoveJ pHomeL ,v100,fine,GripperL;
+             IF(iterations_by_americano=1) then
+                Americano p1Americano1L,p1Americano2L,p1Americano3L,p1Americano4L ;
+             ELSEIF(iterations_by_americano=2) THEN
+                 Americano p2Americano1L,p2Americano2L,p2Americano3L,p2Americano4L;
+             ELSEIF(iterations_by_americano=3) THEN
+                 Americano p3Americano1L,p3Americano2L,p3Americano3L,p3Americano4L;
+             ELSEIF(iterations_by_americano=4) then
+                 Americano p4Americano1L,p4Americano2L,p4Americano3L,p4Americano4L;
+             ENDIF
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            go_to_give_capsule;
+            waittime 1;
+            g_Gripout;
+            MoveJ pHomeL ,v100,fine,GripperL;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            put_and_give_cup;
+            MoveJ pHomeL ,v200,fine,GripperL;
+            SetDO custom_DO_7,0;
+        elseif (choice_coffe_by_bool=2)THEN
+             WaitDO custom_DO_7,1;
+             IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=1) then
+                insert_cup p1Cup1L,p1Cup2L,p1Cup3L,p1Cup4L;
+             ENDIF
+ 	        IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=2) then
+                 insert_cup p2Cup1L,p2Cup2L,p2Cup3L,p2Cup4L;
+             ENDIF
+ 	        IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=3) then
+                 insert_cup p3Cup1L,p3Cup2L,p3Cup3L,p3Cup4L;
+             ENDIF
+             MoveJ pHomeL ,v100,fine,GripperL;
+             IF(iterations_by_latte=1) then
+                latte_milk p1Late_milk1L,p1Late_milk2L,p1Late_milk3L,p1Late_milk4L,p1Late_milk5L,p1Late_milk6L;
+             ELSEIF(iterations_by_latte=2) THEN
+                latte_milk p2Late_milk1L,p2Late_milk2L,p2Late_milk3L,p2Late_milk4L,p2Late_milk5L,p2Late_milk6L;
+             ELSEIF(iterations_by_latte=3) THEN
+                latte_milk p3Late_milk1L,p3Late_milk2L,p3Late_milk3L,p3Late_milk4L,p3Late_milk5L,p3Late_milk6L;
+             ELSEIF(iterations_by_latte=4) then
+                latte_milk p4Late_milk1L,p4Late_milk2L,p4Late_milk3L,p4Late_milk4L,p4Late_milk5L,p4Late_milk6L;
+             ENDIF
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            go_to_give_capsule;
+            waittime 1;
+            g_Gripout;
+            MoveJ pHomeL ,v100,fine,GripperL;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            pull_out_the_capsulopriemnik_L;
+            MoveJ pHomeL ,v200,fine,GripperL;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            pick_up_capsulle_by_left1;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            pick_up_capsulle_by_left2;
+            MoveJ pHomeL ,v100,fine,GripperL;
+            insert_capsule_L;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            put_and_give_cup;
+            SetDO custom_DO_7,0;
+         ELSEIF(choice_coffe_by_bool=3) THEN
+             WaitDO custom_DO_7,1;
+             IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=1) then
+                insert_cup p1Cup1L,p1Cup2L,p1Cup3L,p1Cup4L;
+             ENDIF
+ 	        IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=2) then
+                 insert_cup p2Cup1L,p2Cup2L,p2Cup3L,p2Cup4L;
+             ENDIF
+ 	        IF(iterations_by_capuccino+iterations_by_americano+iterations_by_latte=3) then
+                 insert_cup p3Cup1L,p3Cup2L,p3Cup3L,p3Cup4L;
+             ENDIF
+             MoveJ pHomeL ,v100,fine,GripperL;
+             SetDO custom_DO_7,0;
+             WaitDO custom_DO_7,1;
+            pull_out_the_capsulopriemnik_L;
+            MoveJ pHomeL ,v200,fine,GripperL;
+             SetDO custom_DO_7,0;
+             WaitDO custom_DO_7,1;
+            pick_up_capsulle_by_left1;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            pick_up_capsulle_by_left2;
+            MoveJ pHomeL ,v200,fine,GripperL;
+            insert_capsule_L;
+            MoveJ pHomeL ,v200,fine,GripperL;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            pull_out_the_capsulopriemnik_L;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            pick_up_capsulle_by_left1;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+            pick_up_capsulle_by_left2;
+            insert_capsule_L;
+            SetDO custom_DO_7,0;
+            WaitDO custom_DO_7,1;
+
+
+            put_and_give_cup;
+            MoveJ pHomeL ,v200,fine,GripperL;
+            SetDO custom_DO_7,0;
+ENDIF
+        ENDPROC
+ENDMODULE
